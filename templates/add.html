@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8" />
+    <title>Add movie</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Ikony (Font Awesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<header class="topbar">
+    <h1>My favorite movies to watch</h1>
+</header>
+
+<main class="page">
+    <section class="card">
+
+        <!-- możliwość powrotu do strony głównej -->
+        <a class="link" href="{{ url_for('home') }}">
+            <i class="fa-solid fa-angle-left"></i>
+            Back to list of movies
+        </a>
+
+        <div class="card-title">
+            <i class="fa-regular fa-file-lines"></i>
+            <h2>Add movie</h2>
+        </div>
+
+        <form class="form" method="POST" action="/addMovie">
+            <label>
+                Title:
+                <input type="text" name="title" placeholder="e.g. The Matrix" required>
+            </label>
+
+            <label>
+                Year:
+                <input type="text" name="year" placeholder="e.g. 1999" required>
+            </label>
+
+            <label>
+                Actors:
+                <input type="text" name="actors" placeholder="e.g. Keanu Reeves, Laurence Fishburne" required>
+            </label>
+
+            <button class="btn" name="button" type="submit">
+                <i class="fa-solid fa-circle-plus"></i>
+                Add
+            </button>
+        </form>
+    </section>
+</main>
+
+</body>
+</html>

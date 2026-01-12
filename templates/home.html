@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8" />
+    <title>My favorite movies to watch</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Ikony (Font Awesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<header class="topbar">
+    <h1>My favorite movies to watch</h1>
+</header>
+
+<main class="page">
+    <section class="card">
+        <div class="card-title">
+            <i class="fa-regular fa-rectangle-list"></i>
+            <h2>Titles</h2>
+        </div>
+
+        <a class="link" href="{{ url_for('add_movie') }}">
+            <i class="fa-solid fa-circle-plus"></i>
+            Add new movie
+        </a>
+
+        <!-- formularz do usuwania (POST na "/") -->
+        <form method="POST" action="{{ url_for('home') }}">
+            <ul class="movie-list">
+                {% for movie in movies %}
+                    <li>
+                        <!-- checkbox wg instrukcji -->
+                        <label>
+                            <input type="checkbox" name="movieToRemove" value="{{ movie[0] }}">
+                        </label>
+                        {{ movie[1] }}, {{ movie[2] }}, {{ movie[3] }}
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <!-- przycisk usuwania zaznaczonych -->
+            <button class="btn" type="submit">
+                <i class="fa-solid fa-trash"></i>
+                Delete selected
+            </button>
+        </form>
+    </section>
+</main>
+
+</body>
+</html>

@@ -1,0 +1,41 @@
+# --- Python / venv ---
+.venv/
+venv/
+ENV/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- Flask ---
+instance/
+.webassets-cache
+
+# --- SQLite ---
+# ignoruj wszystkie bazy...
+*.sqlite
+*.sqlite3
+*.db
+
+# nie ignorować
+!movies.db
+
+# --- Logs ---
+*.log
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# --- IDE (PyCharm / IntelliJ) ---
+.idea/
+*.iml
+
+# --- Jupyter  ---
+.ipynb_checkpoints/
+
+# --- Build / packaging ---
+build/
+dist/
+*.egg-info/
