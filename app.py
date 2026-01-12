@@ -30,19 +30,11 @@ def init_db() -> None:
     conn.close()
 
 
-# ważne: init_db wykona się automatycznie zanim poleci pierwszy request
-_db_initialized = False
-
-
-@app.before_request
-def ensure_db():
-    global _db_initialized
-    if not _db_initialized:
-        init_db()
-        _db_initialized = True
-
-
-def fetch_movies() -> list[tuple]:
+def fetch_movies() -> list[tuple[int, str, str, str]]:
+    """
+    Zwraca listę filmów w formacie:
+    (id, title, year, actors)
+    """
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute("SELECT id, title, year, actors FROM movies ORDER BY id DESC")
@@ -51,12 +43,11 @@ def fetch_movies() -> list[tuple]:
     return [(r["id"], r["title"], r["year"], r["actors"]) for r in rows]
 
 
-# usuwanie filmów po ID (bezpieczne placeholdery)
 def delete_movies_by_ids(ids: list[int]) -> None:
     if not ids:
         return
 
-    placeholders = ",".join(["?"] * len(ids))  # np. "?, ?, ?"
+    placeholders = ",".join(["?"] * len(ids))
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute(f"DELETE FROM movies WHERE id IN ({placeholders})", ids)
@@ -64,26 +55,19 @@ def delete_movies_by_ids(ids: list[int]) -> None:
     conn.close()
 
 
-# endpoint "/" obsługuje też POST (usuwanie)
 @app.route("/", methods=["GET", "POST"])
 def home():
     if request.method == "POST":
-        # pobranie listy zaznaczonych checkboxów
         movies_to_remove_ids = request.form.getlist("movieToRemove")
 
-        # checkboxy zwracają stringi -> konwersja na int
-        if movies_to_remove_ids:
-            ids_int = []
-            for x in movies_to_remove_ids:
-                try:
-                    ids_int.append(int(x))
-                except ValueError:
-                    # w przypadku podmiany ignorowanie śmieci
-                    pass
+        ids_int: list[int] = []
+        for x in movies_to_remove_ids:
+            try:
+                ids_int.append(int(x))
+            except ValueError:
+                pass
 
-            delete_movies_by_ids(ids_int)
-
-        # PRG: po usunięciu powrót na GET /
+        delete_movies_by_ids(ids_int)
         return redirect(url_for("home"))
 
     movies = fetch_movies()
@@ -94,18 +78,30 @@ def home():
 def add_movie():
     if request.method == "POST":
         movie_title = request.form.get("title", "").strip()
-        movie_year = request.form.get("year", "").strip()
+        movie_year_raw = request.form.get("year", "").strip()
         movie_actors = request.form.get("actors", "").strip()
 
-        if movie_title and movie_year and movie_actors:
-            conn = get_db_connection()
-            cur = conn.cursor()
-            cur.execute(
-                "INSERT INTO movies (title, year, actors) VALUES (?, ?, ?)",
-                (movie_title, movie_year, movie_actors),
-            )
-            conn.commit()
-            conn.close()
+        # WALIDACJA: year musi być liczbą (bez liter)
+        if not (movie_title and movie_year_raw and movie_actors):
+            return redirect(url_for("add_movie"))
+
+        if not movie_year_raw.isdigit():
+            return redirect(url_for("add_movie"))
+
+        year_int = int(movie_year_raw)
+
+        # zakres roku filmu
+        if not (1888 <= year_int <= 2100):
+            return redirect(url_for("add_movie"))
+
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute(
+            "INSERT INTO movies (title, year, actors) VALUES (?, ?, ?)",
+            (movie_title, str(year_int), movie_actors),
+        )
+        conn.commit()
+        conn.close()
 
         return redirect(url_for("home"))
 
@@ -113,4 +109,6 @@ def add_movie():
 
 
 if __name__ == "__main__":
+    # inicjalizacja DB raz na starcie
+    init_db()
     app.run(debug=True)

@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <title>Add movie</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <!-- Ikony (Font Awesome) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
@@ -16,7 +15,6 @@
 <main class="page">
     <section class="card">
 
-        <!-- możliwość powrotu do strony głównej -->
         <a class="link" href="{{ url_for('home') }}">
             <i class="fa-solid fa-angle-left"></i>
             Back to list of movies
@@ -27,7 +25,8 @@
             <h2>Add movie</h2>
         </div>
 
-        <form class="form" method="POST" action="/addMovie">
+        <!-- action przez url_for -->
+        <form class="form" method="POST" action="{{ url_for('add_movie') }}">
             <label>
                 Title:
                 <input type="text" name="title" placeholder="e.g. The Matrix" required>
@@ -35,7 +34,15 @@
 
             <label>
                 Year:
-                <input type="text" name="year" placeholder="e.g. 1999" required>
+                <input
+                        class="input"
+                        type="number"
+                        name="year"
+                        required
+                        placeholder="e.g. 1999"
+                        min="1888"
+                        max="2100"
+                        step="1">
             </label>
 
             <label>

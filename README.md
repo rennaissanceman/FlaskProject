@@ -1,13 +1,37 @@
-# Baza filmów (Flask + SQLite)
+# Getting Started with Flask Movie Database
 
-Prosta aplikacja webowa we Flask umożliwiająca:
-- wyświetlanie listy filmów,
-- dodawanie filmu przez formularz,
-- usuwanie zaznaczonych filmów (checkboxy),
-- przechowywanie danych w bazie SQLite (`movies.db`).
+This project was bootstrapped as a simple **Flask + SQLite** application.
 
-## Wymagania
-- Python 3.10+ (zalecane 3.11/3.12/3.13)
-- pip
+It provides a minimal web interface for managing a list of movies:
+adding new entries, displaying them, and removing selected ones.
 
-## Struktura projektu
+---
+
+## Available Scripts
+
+In the project directory, you can run:
+
+---
+
+### `python app.py`
+
+Runs the application in **development mode** using the built-in Flask server.
+
+Open  
+http://127.0.0.1:5000  
+to view it in your browser.
+
+The page will reload automatically when you make changes to the code.
+
+Any runtime errors or logs will be visible in the terminal.
+
+---
+
+### `flask run --debug`
+
+Runs the app using **Flask CLI** with debug mode enabled.
+
+Before running this command, make sure the Flask app is set:
+
+```powershell
+$env:FLASK_APP="app.py"
